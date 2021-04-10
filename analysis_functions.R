@@ -2,8 +2,9 @@
 
 # COPY FROM EXAMPLE SCRIPT
 library(dplyr)
+library(ggplot2)
   
-# input_csv <- read.csv("C:/Users/Lian Plass/Downloads/_TEMP/JAX-CHNA/CHNA_Analysis/basic_dataset.csv", stringsAsFactors=FALSE)
+input_csv <- read.csv("basic_dataset.csv", stringsAsFactors=FALSE)
 
 var_obs_1<-input_csv[,1]
 var_obs_2<-input_csv[,2]
@@ -60,8 +61,8 @@ vari_calc = function(var_observations){
 }
 
 #COUNT (NOT WORD FREQUENCY ANALYSIS)
-count_calc = function(var_observations){
-  input_count<<-head(table(var_observations))
+count_calc = function(Counts){
+  input_count<<-head(sort(table(Counts), decreasing=TRUE))
 }
 
 #CALCULATES AND FORMATS MEAN, MEDIAN, MODE, RANGE, SD, AND VARIATION FOR INPUT TABLE
@@ -96,12 +97,20 @@ table1 = function(input_csv){
 }
 
 element1 = function(input_csv){
-  str(input_csv)
   input_csv<-select_if(input_csv,is.character)
   for (i in input_csv){
     print(count_calc(i))
   }
 }
+
+#PLOTS
+#NUMERIC VARIABLES
+cleanset<-select_if(input_csv, is.numeric)
+for (i in cleanset){
+  plot(i)
+}
+
+#CATEGORICAL VARIABLES
 
 
 # TEST CODE HERE
@@ -134,17 +143,24 @@ ui<- fluidPage(
     ),
 #This is the main panel containing the descriptive statistic plots and the word cloud analysis
     mainPanel(
-      tags$h3("Basic Descriptive Statistics from Dataset:"),
-      tags$p("Descriptive statistics (e.g., mean, median, and mode) will populate here once you load in your file. Once you have loaded in your data.  Click on the tabs above to navigate to Plots, Word Frequency Analysis, and more."),
-      tableOutput("descriptive_statistics"),
-      tags$h3("Counts (Categorical Variables Only)"),
-      tags$p("Here are some descriptive statistics for the categorical (non-numeric) variables you entered.  Do NOT run this function on short response answers that have not been categorized."),
-      verbatimTextOutput("descriptive_counts"),
-      plotOutput("descriptive_statistics_plots"),
-      plotOutput("word_cloud_plots")
-    )
-  )
+      navbarPage(title="Results",
+                 tabPanel("Basic Insights",
+                          tags$h3("Basic Descriptive Statistics from Dataset:"),
+                          tags$p("Descriptive statistics (e.g., mean, median, and mode) will populate here once you load in your file. Once you have loaded in your data.  Click on the tabs above to navigate to Plots, Word Frequency Analysis, and more."),
+                          tableOutput("descriptive_statistics"),
+                          tags$h3("Counts (Categorical Variables Only)"),
+                          tags$p("Here are some descriptive statistics for the categorical (non-numeric) variables you entered.  Do NOT run this function on short response answers that have not been categorized."),
+                          verbatimTextOutput("descriptive_counts"),
+                          plotOutput("descriptive_statistics_plots"),
+                          plotOutput("word_cloud_plots")
+                          ),
+                 tabPanel("Plots","PLACEHOLDER"
+                          )
+                 )
+      )
 )
+)
+
 
 server<- function(input, output){
   output$descriptive_statistics<-renderTable({
@@ -163,15 +179,13 @@ server<- function(input, output){
     #output$word_cloud_plots
   })
   
-  output$descriptive_counts<-renderText({
+  output$descriptive_counts<-renderPrint({
     inFile<-input$input_csv
     if(is.null(inFile))
       return(NULL)
     element1_input<-read.csv(inFile$datapath, header = input$header,stringsAsFactors=FALSE)
-    #FIGURE OUT HOW TO GET THIS OUTPUT TO POPULATE
     element1(element1_input)
   }
-    
   )
   }
 
