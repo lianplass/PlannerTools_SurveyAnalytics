@@ -1,9 +1,7 @@
 #The following is a general Shiny App used to display statistics, charts, and graphs based on sanitized user input data.
 
-# REMEMBER TO CHANGE THESE DEFAULT VALUES TO FUNCTION THAT READS CORRESPONDING INPUT CSV COLUMN
-
 # COPY FROM EXAMPLE SCRIPT
-basic_dataset <- read.csv("C:/Users/Lian Plass/Downloads/_TEMP/JAX-CHNA/CHNA_Analysis/basic_dataset.csv", stringsAsFactors=FALSE)
+# input_csv <- read.csv("C:/Users/Lian Plass/Downloads/_TEMP/JAX-CHNA/CHNA_Analysis/basic_dataset.csv", stringsAsFactors=FALSE)[,-5]
 
 var_obs_1<-input_csv[,1]
 var_obs_2<-input_csv[,2]
@@ -28,57 +26,74 @@ input_SD<-c(0)
 input_variance<-c(0)
 input_count<-c(0)
 
-possible_functions<-c("mean_calc","median_calc", "mode_calc","range_calc","SD_calc","vari_calc", "count_calc")
-
 #MEAN
-mean_calc <- function(var_observations){
+mean_calc = function(var_observations){
   input_mean<<-mean(var_observations)
 }
 
 #MEDIAN
-median_calc <- function(var_observations){
+median_calc = function(var_observations){
   input_median<<-median(var_observations)
 }
 
 #MODE
-mode_calc <- function(var_observations){
+mode_calc = function(var_observations){
   uniquevar <-unique(var_observations)
   input_mode<<-uniquevar[which.max(tabulate(match(var_observations, uniquevar)))]
 }
 
 #RANGE
-range_calc <- function(var_observations){
+range_calc = function(var_observations){
   input_range <<-max(var_observations)-min(var_observations)
 }
 
 #STANDARD DEVIATION
-SD_calc <- function(var_observations){
+SD_calc = function(var_observations){
   input_SD<<-sd(var_observations)
 }
 
 #VARIANCE
-vari_calc <- function(var_observations){
+vari_calc = function(var_observations){
   input_variance<<-var(var_observations)
 }
 
 #COUNT (NOT WORD FREQUENCY ANALYSIS)
-count_calc <- function(var_observations){
+count_calc = function(var_observations){
   input_count<<-table(var_observations)
 }
 
-#RETURN TO THIS WEEK OF 4-4-2021--FIX FUNCTION TO PROCESS EACH VARIABLE
-descriptives_table_function<-function(){
-  for (i in all_var_obs) {
-    for (j in possible_functions){
-      descriptives_table<<-parse(text=j)(all_var_obs[i])
+#CALCULATES AND FORMATS MEAN, MEDIAN, MODE, RANGE, SD, AND VARIATION FOR INPUT TABLE
+
+table1 = function(input_csv){
+  str(input_csv)
+  for (i in 1:ncol(input_csv)){
+    clean_input_csv<- na.omit(input_csv[,i])
+    if (i==1){
+      descriptives_table<-data.frame("Dataset"=colnames(input_csv)[i],
+                                     "Mean"=mean_calc(clean_input_csv),
+                                     "Median"=median_calc(clean_input_csv),
+                                     "Mode"=mode_calc(clean_input_csv),
+                                     "Range"=range_calc(i),
+                                     "Standard Deviation"=SD_calc(clean_input_csv),
+                                     "Variance"=vari_calc(clean_input_csv)
+                                     )
+    } else{
+      temporary_dataframe<-data.frame("Dataset"=colnames(input_csv)[i],
+                                       "Mean"=mean_calc(clean_input_csv),
+                                       "Median"=median_calc(clean_input_csv),
+                                       "Mode"=mode_calc(clean_input_csv),
+                                       "Range"=range_calc(i),
+                                       "Standard Deviation"=SD_calc(clean_input_csv),
+                                       "Variance"=vari_calc(clean_input_csv)
+                                      )
+      descriptives_table <- rbind(descriptives_table,temporary_dataframe)
     }
   }
+  descriptives_table
 }
 
-descriptives_table_function()
-# SHINY APPLICATION BEGINS HERE
 
-
+# SHINY APP BEGINS HERE
 library(shiny)
 
 ui<- fluidPage(
@@ -89,27 +104,26 @@ ui<- fluidPage(
     #This is the left sidebar containing operation checkboxes
     sidebarPanel(
       fileInput(
-        inputId = "input_csv", 
+        inputId = "input_csv",
         label = "Upload your sanitized CSV here:",
         accept = c("text/csv", "text/comma-separated-values,text/plain",
                    ".csv")
-        ),
+      ),
       tags$hr(),
       checkboxInput(
-        inputId = "header", 
+        inputId = "header",
         label = "Header",
         value = TRUE
-        ),
-      tableOutput("descriptive_statistics"),
-      tableOutput("test")
+      ),
     ),
-  #This is the main panel containing the descriptive statistic plots and    the word cloud analysis
-  mainPanel(
-    tags$p("PLACEHOLDER"),
-    plotOutput("descriptive_statistics_plots"),
-    plotOutput("word_cloud_plots")
+#This is the main panel containing the descriptive statistic plots and    the word cloud analysis
+    mainPanel(
+      tags$p("PLACEHOLDER"),
+      tableOutput("descriptive_statistics"),
+      plotOutput("descriptive_statistics_plots"),
+      plotOutput("word_cloud_plots")
+    )
   )
-)
 )
 
 server<- function(input, output){
@@ -117,14 +131,17 @@ server<- function(input, output){
     inFile <-input$input_csv
     if(is.null(inFile))
       return(NULL)
-    read.csv(inFile$datapath, header = input$header)
-      #observe({
+    table1_input<-read.csv(inFile$datapath, header = input$header)
+    table1(table1_input[,-5])
+    # descriptives_table
+
+    #observe({
     #output$value<- ADD SELECTION IN A SPECIFIC ORDER IN A LIST
-  #output$descriptive_statistics_plots
-  #output$word_cloud_plots
-  
-  }
-  output$test<-renderTable(descriptives_table))
-}
+    #output$descriptive_statistics_plots
+    #output$word_cloud_plots
+
+  })}
 
 shinyApp(ui=ui, server=server)
+
+# END OF SHINY APP
