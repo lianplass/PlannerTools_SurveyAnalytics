@@ -1,7 +1,9 @@
 #The following is a general Shiny App used to display statistics, charts, and graphs based on sanitized user input data.
 
 # COPY FROM EXAMPLE SCRIPT
-# input_csv <- read.csv("C:/Users/Lian Plass/Downloads/_TEMP/JAX-CHNA/CHNA_Analysis/basic_dataset.csv", stringsAsFactors=FALSE)[,-5]
+library(dplyr)
+  
+# input_csv <- read.csv("C:/Users/Lian Plass/Downloads/_TEMP/JAX-CHNA/CHNA_Analysis/basic_dataset.csv", stringsAsFactors=FALSE)
 
 var_obs_1<-input_csv[,1]
 var_obs_2<-input_csv[,2]
@@ -59,13 +61,14 @@ vari_calc = function(var_observations){
 
 #COUNT (NOT WORD FREQUENCY ANALYSIS)
 count_calc = function(var_observations){
-  input_count<<-table(var_observations)
+  input_count<<-head(table(var_observations))
 }
 
 #CALCULATES AND FORMATS MEAN, MEDIAN, MODE, RANGE, SD, AND VARIATION FOR INPUT TABLE
 
 table1 = function(input_csv){
   str(input_csv)
+  input_csv<-select_if(input_csv, is.numeric)
   for (i in 1:ncol(input_csv)){
     clean_input_csv<- na.omit(input_csv[,i])
     if (i==1){
@@ -92,6 +95,19 @@ table1 = function(input_csv){
   descriptives_table
 }
 
+element1 = function(input_csv){
+  str(input_csv)
+  input_csv<-select_if(input_csv,is.character)
+  for (i in input_csv){
+    print(count_calc(i))
+  }
+}
+
+
+# TEST CODE HERE
+# typeof(input_csv[,5])
+# select_if(input_csv,is.character)
+# element1(input_csv)
 
 # SHINY APP BEGINS HERE
 library(shiny)
@@ -116,10 +132,14 @@ ui<- fluidPage(
         value = TRUE
       ),
     ),
-#This is the main panel containing the descriptive statistic plots and    the word cloud analysis
+#This is the main panel containing the descriptive statistic plots and the word cloud analysis
     mainPanel(
-      tags$p("PLACEHOLDER"),
+      tags$h3("Basic Descriptive Statistics from Dataset:"),
+      tags$p("Descriptive statistics (e.g., mean, median, and mode) will populate here once you load in your file. Once you have loaded in your data.  Click on the tabs above to navigate to Plots, Word Frequency Analysis, and more."),
       tableOutput("descriptive_statistics"),
+      tags$h3("Counts (Categorical Variables Only)"),
+      tags$p("Here are some descriptive statistics for the categorical (non-numeric) variables you entered.  Do NOT run this function on short response answers that have not been categorized."),
+      verbatimTextOutput("descriptive_counts"),
       plotOutput("descriptive_statistics_plots"),
       plotOutput("word_cloud_plots")
     )
@@ -132,15 +152,28 @@ server<- function(input, output){
     if(is.null(inFile))
       return(NULL)
     table1_input<-read.csv(inFile$datapath, header = input$header)
-    table1(table1_input[,-5])
+    table1(table1_input) 
+    
+
     # descriptives_table
 
     #observe({
     #output$value<- ADD SELECTION IN A SPECIFIC ORDER IN A LIST
     #output$descriptive_statistics_plots
     #output$word_cloud_plots
-
-  })}
+  })
+  
+  output$descriptive_counts<-renderText({
+    inFile<-input$input_csv
+    if(is.null(inFile))
+      return(NULL)
+    element1_input<-read.csv(inFile$datapath, header = input$header,stringsAsFactors=FALSE)
+    #FIGURE OUT HOW TO GET THIS OUTPUT TO POPULATE
+    element1(element1_input)
+  }
+    
+  )
+  }
 
 shinyApp(ui=ui, server=server)
 
