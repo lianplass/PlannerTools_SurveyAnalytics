@@ -3,7 +3,7 @@
 # COPY FROM EXAMPLE SCRIPT
 library(dplyr)
 library(ggplot2)
-  
+
 input_csv <- read.csv("basic_dataset.csv", stringsAsFactors=FALSE)
 
 var_obs_1<-input_csv[,1]
@@ -80,16 +80,16 @@ table1 = function(input_csv){
                                      "Range"=range_calc(i),
                                      "Standard Deviation"=SD_calc(clean_input_csv),
                                      "Variance"=vari_calc(clean_input_csv)
-                                     )
+      )
     } else{
       temporary_dataframe<-data.frame("Dataset"=colnames(input_csv)[i],
-                                       "Mean"=mean_calc(clean_input_csv),
-                                       "Median"=median_calc(clean_input_csv),
-                                       "Mode"=mode_calc(clean_input_csv),
-                                       "Range"=range_calc(i),
-                                       "Standard Deviation"=SD_calc(clean_input_csv),
-                                       "Variance"=vari_calc(clean_input_csv)
-                                      )
+                                      "Mean"=mean_calc(clean_input_csv),
+                                      "Median"=median_calc(clean_input_csv),
+                                      "Mode"=mode_calc(clean_input_csv),
+                                      "Range"=range_calc(i),
+                                      "Standard Deviation"=SD_calc(clean_input_csv),
+                                      "Variance"=vari_calc(clean_input_csv)
+      )
       descriptives_table <- rbind(descriptives_table,temporary_dataframe)
     }
   }
@@ -103,12 +103,33 @@ element1 = function(input_csv){
   }
 }
 
+#PEARSONS CHI SQUARED
+table2 = function(input_csv){
+  data.frame( 
+    names(select_if(input_csv,is.numeric)),
+    cor(select_if(input_csv,is.numeric))
+  )
+}
+
+
 #PLOTS
 #NUMERIC VARIABLES
-cleanset<-select_if(input_csv, is.numeric)
-for (i in cleanset){
-  plot(i)
+
+plot_var_selection<-input_csv$potato
+
+all_plots<-function(plot_var_selection){
+  if(is.numeric(plot_var_selection)==FALSE){
+    plot_var_selection<<-data.frame(table(plot_var_selection))
+    names(plot_var_selection)<<-c("Categories","Frequencies")
+    plot_var_selection$Categories<-paste0(plot_var_selection$Categories, " (", round((plot_var_selection$Frequencies/sum(plot_var_selection$Frequencies))*100, digits=2),"%)")
+    
+    ggplot(data=plot_var_selection, aes(x="", y=Frequencies, fill=Categories))+
+      geom_bar(stat="identity",width=1,color="white") +
+      coord_polar("y", start=0)+
+      theme_void()
+  }
 }
+all_plots(plot_var_selection)
 
 #CATEGORICAL VARIABLES
 
@@ -141,24 +162,32 @@ ui<- fluidPage(
         value = TRUE
       ),
     ),
-#This is the main panel containing the descriptive statistic plots and the word cloud analysis
+    #This is the main panel containing the descriptive statistic plots and the word cloud analysis
     mainPanel(
       navbarPage(title="Results",
                  tabPanel("Basic Insights",
-                          tags$h3("Basic Descriptive Statistics from Dataset:"),
+                          tags$h3("Basic Descriptive Statistics from Dataset"),
                           tags$p("Descriptive statistics (e.g., mean, median, and mode) will populate here once you load in your file. Once you have loaded in your data.  Click on the tabs above to navigate to Plots, Word Frequency Analysis, and more."),
                           tableOutput("descriptive_statistics"),
                           tags$h3("Counts (Categorical Variables Only)"),
                           tags$p("Here are some descriptive statistics for the categorical (non-numeric) variables you entered.  Do NOT run this function on short response answers that have not been categorized."),
                           verbatimTextOutput("descriptive_counts"),
+                 ),
+                 tabPanel("Advanced",
+                          tags$h3("Plots"),
+                          tags$p("Select a variable from the dropdown to see a plot of the data."),
+                          selectInput("plot_prelim_input","Select Variable:", c(names(input_csv))),
                           plotOutput("descriptive_statistics_plots"),
-                          plotOutput("word_cloud_plots")
-                          ),
-                 tabPanel("Plots","PLACEHOLDER"
-                          )
-                 )
+                          tags$h3("Correlation"),
+                          tags$p("The following is the table output for Pearson's Chi Squared test of independence.  It is useful for determining whether variables are correlated. The closer values in this table are to 1, the more heavily correlated they are."),
+                          tags$p("This table analyzed all NUMERIC data you entered.  If you wish to analyze non-numeric data, please follow the guide in the csv sanitization Excel Workbook available in the left side panel."),
+                          #ADD PEARSON'S CHI TABLE OUTPUT HERE
+                          tableOutput("pearsons_table")
+                 ),
+                 tabPanel("Word Frequency Analysis")
       )
-)
+    )
+  )
 )
 
 
@@ -169,14 +198,6 @@ server<- function(input, output){
       return(NULL)
     table1_input<-read.csv(inFile$datapath, header = input$header)
     table1(table1_input) 
-    
-
-    # descriptives_table
-
-    #observe({
-    #output$value<- ADD SELECTION IN A SPECIFIC ORDER IN A LIST
-    #output$descriptive_statistics_plots
-    #output$word_cloud_plots
   })
   
   output$descriptive_counts<-renderPrint({
@@ -185,9 +206,26 @@ server<- function(input, output){
       return(NULL)
     element1_input<-read.csv(inFile$datapath, header = input$header,stringsAsFactors=FALSE)
     element1(element1_input)
-  }
-  )
-  }
+  })
+  
+  # output$descriptive_statistics_plots<-plotOutput ({
+  #   inFile<-input$input_csv
+  #   if(is.null(inFile))
+  #     return(NULL)
+  # plot_var_selection<-read.csv(inFile$datapath, header = input$header,stringsAsFactors=FALSE)
+  # plot_var_selection<-plot_var_selection[,input$plot_prelim_input]
+  # all_plots(plot_var_selection)
+  # })
+  
+  output$pearsons_table<-renderTable({
+    inFile <-input$input_csv
+    if(is.null(inFile))
+      return(NULL)
+    table2_input<-read.csv(inFile$datapath, header = input$header)
+    table2(table2_input) 
+  })    
+  
+}
 
 shinyApp(ui=ui, server=server)
 
