@@ -5,6 +5,7 @@ library(dplyr)
 library(ggplot2)
 
 input_csv <- read.csv("basic_dataset.csv", stringsAsFactors=FALSE)
+input_csv<-c(" ")
 
 var_obs_1<-input_csv[,1]
 var_obs_2<-input_csv[,2]
@@ -119,8 +120,8 @@ plot_var_selection<-input_csv$potato
 
 all_plots<-function(plot_var_selection){
   if(is.numeric(plot_var_selection)==FALSE){
-    plot_var_selection<<-data.frame(table(plot_var_selection))
-    names(plot_var_selection)<<-c("Categories","Frequencies")
+    plot_var_selection<-data.frame(table(plot_var_selection))
+    names(plot_var_selection)<-c("Categories","Frequencies")
     plot_var_selection$Categories<-paste0(plot_var_selection$Categories, " (", round((plot_var_selection$Frequencies/sum(plot_var_selection$Frequencies))*100, digits=2),"%)")
     
     ggplot(data=plot_var_selection, aes(x="", y=Frequencies, fill=Categories))+
@@ -176,7 +177,7 @@ ui<- fluidPage(
                  tabPanel("Advanced",
                           tags$h3("Plots"),
                           tags$p("Select a variable from the dropdown to see a plot of the data."),
-                          selectInput("plot_prelim_input","Select Variable:", c(names(input_csv))),
+                          selectInput("plot_prelim_input","Select Variable:", names(table1_input)),
                           plotOutput("descriptive_statistics_plots"),
                           tags$h3("Correlation"),
                           tags$p("The following is the table output for Pearson's Chi Squared test of independence.  It is useful for determining whether variables are correlated. The closer values in this table are to 1, the more heavily correlated they are."),
@@ -208,14 +209,18 @@ server<- function(input, output){
     element1(element1_input)
   })
   
-  # output$descriptive_statistics_plots<-plotOutput ({
-  #   inFile<-input$input_csv
-  #   if(is.null(inFile))
-  #     return(NULL)
-  # plot_var_selection<-read.csv(inFile$datapath, header = input$header,stringsAsFactors=FALSE)
-  # plot_var_selection<-plot_var_selection[,input$plot_prelim_input]
-  # all_plots(plot_var_selection)
+  # output$toCOl <-renderUI({
+  #   inFile <-input$datafile
   # })
+  
+  output$descriptive_statistics_plots<-renderPlot ({
+    inFile<-input$input_csv
+    if(is.null(inFile))
+      return(NULL)
+  plot_var_selection<-read.csv(inFile$datapath, header = input$header,stringsAsFactors=FALSE)
+  plot_var_selection<-plot_var_selection[,input$plot_prelim_input]
+  all_plots(plot_var_selection)
+  })
   
   output$pearsons_table<-renderTable({
     inFile <-input$input_csv
