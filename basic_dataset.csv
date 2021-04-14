@@ -1,35 +1,35 @@
-﻿apple,orange,banana,pear,clarinet,potato
-1,0.815264799,0.378941888,0.874228794,farm,barn
-2,0.0456013,0.530856681,0.244820527,worried,boop
-3,0.318223633,0.549841301,0.268088081,reach,clerk
-4,0.606107907,0.45158134,0.385439404,uptight,shoop
-5,0.472179789,0.117906442,0.754829266,turkey,clerk
-6,0.635638955,0.983769488,0.694467417,common,clerk
-7,0.351805778,0.678918251,0.800651485,ball,clerk
-8,0.277268039,0.877326352,0.72448135,appliance,shoop
-9,0.960821763,0.765759503,0.181981972,rice,shoop
-10,0.699714286,0.069258641,0.563066031,worry,barn
-11,0.416136766,0.894471246,0.01655548,tranquil,barn
-12,0.857435997,0.745028121,0.556683254,kaput,boop
-13,0.516295034,0.113618091,0.766760283,talk,clerk
-14,0.628226357,0.341065521,0.759120167,digestion,shoop
-15,0.501695795,0.644799889,0.943455086,chalk,clerk
-16,0.979654618,0.268074856,0.032487657,enthusiastic,clerk
-17,0.397590306,0.041392618,0.26439717,cats,clerk
-18,0.376125632,0.472489966,0.101653636,fall,shoop
-19,0.437105906,0.377722927,0.075866964,grandfather,shoop
-20,0.426304691,0.54779258,0.678380072,challenge,barn
-21,0.761677103,0.240402906,0.47304827,literate,barn
-22,0.914644572,0.057696518,0.336234986,vacuous,boop
-23,0.6632357,0.813960776,0.46245403,digestion,clerk
-24,0.646780178,0.850424045,0.338427176,quiet,shoop
-25,0.407936546,0.69380055,0.591954175,grateful,clerk
-26,0.205131144,0.534850811,0.131830791,donkey,clerk
-27,0.635196326,0.248356104,0.826028817,mindless,clerk
-28,0.953302204,0.191856915,0.784511117,thought,shoop
-29,0.530818013,0.098544371,0.692804239,press,shoop
-30,0.785179906,0.822313649,0.851966368,calculate,barn
-31,0.14924177,0.236220715,0.472356058,mother,barn
-32,0.085164238,0.823709387,0.051261193,quiet,boop
-33,0.013470885,0.408899796,0.860668624,consist,clerk
-34,0.601757162,0.928097543,0.048986862,assorted,shoop
+﻿apple,orange,banana,pear,clarinet,potato,chard
+1,0.815264799,0.378941888,0.874228794,farm,barn,"low-income people need greater financial assistance from the Government to meet housing costs, which would be beyond the scope of the current HELP payment and might prompt households to move to regional areas where housing affordability is more affordable"
+2,0.0456013,0.530856681,0.244820527,worried,boop,"Liberal Party MPs have previously expressed concerns about housing affordability, with some of the most affected MPs stating that the level of help being offered by the Government to lower-income families was inadequate, and while it was important for governments to provide"
+3,0.318223633,0.549841301,0.268088081,reach,clerk,to weather high energy prices
+4,0.606107907,0.45158134,0.385439404,uptight,shoop,"Even the New York Times, which has opposed imposing a federal solution to climate change, admitted this week that ""limiting the power sector to the status of a recycling business has been a very bad idea."" "
+5,0.472179789,0.117906442,0.754829266,turkey,clerk,"The Times cited the difference between German and U.S. electricity prices, as well as the low price of natural gas, as primary reasons that U.S. power prices remain among the lowest in the world. Low natural gas prices and abundant coal supplies have in large"
+6,0.635638955,0.983769488,0.694467417,common,clerk,Many on a limited income will not be able to see a family doctor as they cannot afford the costs of the care which they need
+7,0.351805778,0.678918251,0.800651485,ball,clerk,Health-insurance subsidies for persons with a family income below 133 percent of the poverty level are limited to the family income.
+8,0.277268039,0.877326352,0.72448135,appliance,shoop,A 2016 study on Medicaid expansion in Oregon found that it reduced financial barriers to care and resulted in greater use of services for medication and primary care.
+9,0.960821763,0.765759503,0.181981972,rice,shoop,low-income people need to work harder
+10,0.699714286,0.069258641,0.563066031,worry,barn,i dont know the answer but i sure hope some company comes along and truly does hire and pay black people and pay them fairly
+11,0.416136766,0.894471246,0.01655548,tranquil,barn,"how come when a black person falls down, it's not ok but when a white person falls down, they are judged? "
+12,0.857435997,0.745028121,0.556683254,kaput,boop,"because insurance companies are trying to make a profit from people's illnesses, so they will charge you whatever it takes to get covered and keep you away from doctors you don't need to go to"
+13,0.516295034,0.113618091,0.766760283,talk,clerk,Because the pharmaceutical companies are making millions of dollars off of how sick people are and how much medicine they need
+14,0.628226357,0.341065521,0.759120167,digestion,shoop,"Not just this one guy, but when someone says they are just ""pouring water from a jug,"" or ""melting ice,"" etc... isnt this the kind of thing they say about the climate scientists who are actually debating the reality of climate change? Like really? "
+15,0.501695795,0.644799889,0.943455086,chalk,clerk,i was called the wacko for telling the truth about my feelings and was told that the only reason people act like this about weather is because they dont want to admit that maybe there isnt a god.
+16,0.979654618,0.268074856,0.032487657,enthusiastic,clerk,"A recent Kaiser Family Foundation study of counties that voted for President Donald Trump found that rural Americans fare worse on most health metrics. The study found that counties with a population under 50,000 and a median income of less than $20,000 were twice as likely to have very high rates of hospital closures and three times as likely to have very high rates of maternal mortality. When people don't have health insurance, they have a much higher risk of dying in childbirth"
+17,0.397590306,0.041392618,0.26439717,cats,clerk,"low-income people need greater financial assistance from the Government to meet housing costs, which would be beyond the scope of the current HELP payment and might prompt households to move to regional areas where housing affordability is more affordable"
+18,0.376125632,0.472489966,0.101653636,fall,shoop,"Liberal Party MPs have previously expressed concerns about housing affordability, with some of the most affected MPs stating that the level of help being offered by the Government to lower-income families was inadequate, and while it was important for governments to provide"
+19,0.437105906,0.377722927,0.075866964,grandfather,shoop,to weather high energy prices
+20,0.426304691,0.54779258,0.678380072,challenge,barn,"Even the New York Times, which has opposed imposing a federal solution to climate change, admitted this week that ""limiting the power sector to the status of a recycling business has been a very bad idea."" "
+21,0.761677103,0.240402906,0.47304827,literate,barn,"The Times cited the difference between German and U.S. electricity prices, as well as the low price of natural gas, as primary reasons that U.S. power prices remain among the lowest in the world. Low natural gas prices and abundant coal supplies have in large"
+22,0.914644572,0.057696518,0.336234986,vacuous,boop,Many on a limited income will not be able to see a family doctor as they cannot afford the costs of the care which they need
+23,0.6632357,0.813960776,0.46245403,digestion,clerk,Health-insurance subsidies for persons with a family income below 133 percent of the poverty level are limited to the family income.
+24,0.646780178,0.850424045,0.338427176,quiet,shoop,A 2016 study on Medicaid expansion in Oregon found that it reduced financial barriers to care and resulted in greater use of services for medication and primary care.
+25,0.407936546,0.69380055,0.591954175,grateful,clerk,low-income people need to work harder
+26,0.205131144,0.534850811,0.131830791,donkey,clerk,i dont know the answer but i sure hope some company comes along and truly does hire and pay black people and pay them fairly
+27,0.635196326,0.248356104,0.826028817,mindless,clerk,"how come when a black person falls down, it's not ok but when a white person falls down, they are judged? "
+28,0.953302204,0.191856915,0.784511117,thought,shoop,"because insurance companies are trying to make a profit from people's illnesses, so they will charge you whatever it takes to get covered and keep you away from doctors you don't need to go to"
+29,0.530818013,0.098544371,0.692804239,press,shoop,Because the pharmaceutical companies are making millions of dollars off of how sick people are and how much medicine they need
+30,0.785179906,0.822313649,0.851966368,calculate,barn,"Not just this one guy, but when someone says they are just ""pouring water from a jug,"" or ""melting ice,"" etc... isnt this the kind of thing they say about the climate scientists who are actually debating the reality of climate change? Like really? "
+31,0.14924177,0.236220715,0.472356058,mother,barn,i was called the wacko for telling the truth about my feelings and was told that the only reason people act like this about weather is because they dont want to admit that maybe there isnt a god.
+32,0.085164238,0.823709387,0.051261193,quiet,boop,"A recent Kaiser Family Foundation study of counties that voted for President Donald Trump found that rural Americans fare worse on most health metrics. The study found that counties with a population under 50,000 and a median income of less than $20,000 were twice as likely to have very high rates of hospital closures and three times as likely to have very high rates of maternal mortality. When people don't have health insurance, they have a much higher risk of dying in childbirth"
+33,0.013470885,0.408899796,0.860668624,consist,clerk,healthcare is too expensive in some parts of the state
+34,0.601757162,0.928097543,0.048986862,assorted,shoop,jobs should be built where there are qualified workers

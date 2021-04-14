@@ -3,9 +3,13 @@
 # COPY FROM EXAMPLE SCRIPT
 library(dplyr)
 library(ggplot2)
+library(wordcloud)
+library(RColorBrewer)
+library(wordcloud2)
+library(tm)
 
 input_csv <- read.csv("basic_dataset.csv", stringsAsFactors=FALSE)
-input_csv<-c(" ")
+#input_csv<-c(" ")
 
 var_obs_1<-input_csv[,1]
 var_obs_2<-input_csv[,2]
@@ -116,7 +120,7 @@ table2 = function(input_csv){
 #PLOTS
 #NUMERIC VARIABLES
 
-plot_var_selection<-input_csv$potato
+#plot_var_selection<-input_csv$potato
 
 all_plots<-function(plot_var_selection){
   if(is.numeric(plot_var_selection)==FALSE){
@@ -134,6 +138,39 @@ all_plots(plot_var_selection)
 
 #CATEGORICAL VARIABLES
 
+#WORD FREQUENCY ANALYSES
+
+#TEXT SANITIZATION
+free_response_selection<-input_csv$chard
+text_sanitization<-function(free_response_selection){
+  if(is.character(free_response_selection)==TRUE){
+    text<-free_response_selection
+    docs <- Corpus(VectorSource(text))
+    docs <- docs %>%
+      tm_map(removeNumbers) %>%
+      tm_map(removePunctuation) %>%
+      tm_map(stripWhitespace)
+    docs <- tm_map(docs, content_transformer(tolower))
+    docs <- tm_map(docs, removeWords, stopwords("english"))
+    
+    dtm <- TermDocumentMatrix(docs) 
+    matrix <- as.matrix(dtm) 
+    words <- sort(rowSums(matrix),decreasing=TRUE) 
+    sanitized_text <<- data.frame(word = names(words),freq=words)
+  }}
+
+text_sanitization(free_response_selection)
+#WORD CLOUD
+set.seed(1)
+wordcloud(words = sanitized_text$word, 
+          freq = sanitized_text$freq, 
+          min.freq = 1,
+          max.words=200, 
+          random.order=FALSE, 
+          rot.per=0.35,            
+          colors=brewer.pal(8, "Dark2"),
+          scale=c(3.5,0.25)
+          )
 
 # TEST CODE HERE
 # typeof(input_csv[,5])
@@ -177,7 +214,7 @@ ui<- fluidPage(
                  tabPanel("Advanced",
                           tags$h3("Plots"),
                           tags$p("Select a variable from the dropdown to see a plot of the data."),
-                          selectInput("plot_prelim_input","Select Variable:", names(table1_input)),
+                          uiOutput("toCol"),
                           plotOutput("descriptive_statistics_plots"),
                           tags$h3("Correlation"),
                           tags$p("The following is the table output for Pearson's Chi Squared test of independence.  It is useful for determining whether variables are correlated. The closer values in this table are to 1, the more heavily correlated they are."),
@@ -209,9 +246,15 @@ server<- function(input, output){
     element1(element1_input)
   })
   
-  # output$toCOl <-renderUI({
-  #   inFile <-input$datafile
-  # })
+  output$toCOl <-renderUI({
+      inFile <-input$input_csv
+      if(is.null(inFile))
+        return(NULL) else {
+          plot_input<-read.csv(inFile$datapath, header = input$header)
+          items<-c(names(plot_input))
+          selectInput("plot_prelim_input","Select Variable:", c("a","b","c"))
+        }
+  })
   
   output$descriptive_statistics_plots<-renderPlot ({
     inFile<-input$input_csv
