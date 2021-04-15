@@ -7,6 +7,8 @@ library(wordcloud)
 library(RColorBrewer)
 library(wordcloud2)
 library(tm)
+library(topicmodels)
+library(tidytext)
 
 input_csv <- read.csv("basic_dataset.csv", stringsAsFactors=FALSE)
 #input_csv<-c(" ")
@@ -140,9 +142,9 @@ all_plots(plot_var_selection)
 
 #WORD FREQUENCY ANALYSES
 
-#TEXT SANITIZATION
+#TEXT SANITIZATION (TERM DOCUMENT MATRIX)
 free_response_selection<-input_csv$chard
-text_sanitization<-function(free_response_selection){
+text_sanitization1<-function(free_response_selection){
   if(is.character(free_response_selection)==TRUE){
     text<-free_response_selection
     docs <- Corpus(VectorSource(text))
@@ -153,13 +155,31 @@ text_sanitization<-function(free_response_selection){
     docs <- tm_map(docs, content_transformer(tolower))
     docs <- tm_map(docs, removeWords, stopwords("english"))
     
-    dtm <- TermDocumentMatrix(docs) 
+    dtm <<- TermDocumentMatrix(docs) 
     matrix <- as.matrix(dtm) 
     words <- sort(rowSums(matrix),decreasing=TRUE) 
     sanitized_text <<- data.frame(word = names(words),freq=words)
   }}
 
-text_sanitization(free_response_selection)
+text_sanitization1(free_response_selection)
+
+#TEXT SANITIZATION (DOCUMENT TERM MATRIX)
+text_sanitization2<-function(free_response_selection){
+  if(is.character(free_response_selection)==TRUE){
+    text<-free_response_selection
+    docs <- Corpus(VectorSource(text))
+    docs <- docs %>%
+      tm_map(removeNumbers) %>%
+      tm_map(removePunctuation) %>%
+      tm_map(stripWhitespace)
+    docs <- tm_map(docs, content_transformer(tolower))
+    docs <- tm_map(docs, removeWords, stopwords("english"))
+    
+    dtm_input <<- DocumentTermMatrix(docs)
+  }}
+
+text_sanitization2(free_response_selection)
+
 #WORD CLOUD
 set.seed(1)
 wordcloud(words = sanitized_text$word, 
@@ -169,9 +189,31 @@ wordcloud(words = sanitized_text$word,
           random.order=FALSE, 
           rot.per=0.35,            
           colors=brewer.pal(8, "Dark2"),
-          scale=c(3.5,0.25)
+          scale=c(3.5,0.5)
           )
 
+#IDENTIFY TOPICS USING LDA
+sanitized_text_lda<-LDA(dtm_input, k=5, control=list(seed=2))
+sanitized_text_lda
+
+#TOP TERMS BY TOPIC
+sanitized_text_prob<-tidy(sanitized_text_lda, matrix="beta")
+sanitized_text_prob
+
+sanitized_text_top<- sanitized_text_prob %>%
+  group_by(topic) %>%
+  slice_max(beta, n=3) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+sanitized_text_top %>%
+  mutate(term=reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill=factor(topic)))+
+  geom_col(show.legend=FALSE) +
+  facet_wrap(~topic, scales="free")+
+  scale_y_reordered()
+  
+        
 # TEST CODE HERE
 # typeof(input_csv[,5])
 # select_if(input_csv,is.character)
